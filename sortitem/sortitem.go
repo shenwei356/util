@@ -33,7 +33,7 @@ func (list ByKey) Less(i, j int) bool {
 	return list.ItemList[i].Key < list.ItemList[j].Key
 }
 
-// ascending sort by Value
+// Ascending sort by Value
 type ByValue struct {
 	ItemList
 }
