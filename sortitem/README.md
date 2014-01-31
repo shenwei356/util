@@ -36,7 +36,10 @@ Result:
     [{b 3} {a 12} {c 45}]
     [{c 45} {b 3} {a 12}]
 
+Documentation
+-------------
 
-Copyright (c) 2013, Wei Shen (shenwei356@gmail.com)
+[See documentation on gowalker for more detail](http://gowalker.org/github.com/shenwei356/util/sortitem).
+
 
 [MIT License](https://github.com/shenwei356/util/blob/master/sortitem/LICENSE)

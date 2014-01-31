@@ -23,4 +23,9 @@ Result:
 
 Copyright (c) 2013, Wei Shen (shenwei356@gmail.com)
 
+Documentation
+-------------
+
+[See documentation on gowalker for more detail](http://gowalker.org/github.com/shenwei356/util/bytesize).
+
 [MIT License](https://github.com/shenwei356/util/blob/master/bytesize/LICENSE)

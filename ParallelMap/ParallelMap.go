@@ -2,10 +2,10 @@
 // Use of this source code is governed by a MIT-license
 // that can be found in the LICENSE file.
 
-// ParallelMap - a lock-free parallel map in go.
+// ParallelMap - A lock-free parallel map in go.
 //
 // ParallelMap uses a backend goroutine for the sequential excution of
-// Get and Set or custom function which was inspired by section 14.17
+// Get and Set or custom function, which was inspired by section 14.17
 // in book << The Way to Go >>.
 //
 // Usage
@@ -96,7 +96,6 @@ func (this *ParallelMap) Set(key keyType, value valueType) {
 //            m.Map[i] = int(1)
 //        }
 //    })
-
 func (this *ParallelMap) ExecuteFunc(f func()) {
 	c := make(chan bool)
 	this.Op <- func() {

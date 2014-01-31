@@ -15,4 +15,9 @@ More
 ----
 See the README of sub package.
 
+Documentation
+-------------
+
+[See documentation on gowalker for more detail](http://gowalker.org/github.com/shenwei356/util).
+
 [MIT License](https://github.com/shenwei356/util/blob/master/LICENSE)
