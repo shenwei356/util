@@ -3,7 +3,8 @@
 // that can be found in the LICENSE file.
 
 // ParallelMap - A lock-free parallel map in go.
-//
+package ParallelMap
+
 // ParallelMap uses a backend goroutine for the sequential excution of
 // Get and Set or custom function, which was inspired by section 14.17
 // in book << The Way to Go >>.
@@ -26,8 +27,6 @@
 //            fmt.Println(v)
 //        }
 //    }
-
-package ParallelMap
 
 // The type of the map key is interface{}
 type keyType interface{}

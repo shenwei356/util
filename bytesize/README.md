@@ -1,8 +1,8 @@
 bytesize
 ========
 
-package for providing a way to show readable values of byte sizes by reediting
-the code from http://golang.org/doc/effective_go.html .
+Package for providing a way to show readable values of byte sizes by reediting
+the code from http://golang.org/doc/effective_go.html.
 
 Install
 -------

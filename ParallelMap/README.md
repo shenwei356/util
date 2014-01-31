@@ -1,7 +1,7 @@
 ParallelMap
 ===========
 
-A lock-free parallel map in go
+A lock-free parallel map in go.
 
 ParallelMap uses a backend goroutine for the sequential excution of 
 Get and Set or custom function, which was inspired by section 14.17
