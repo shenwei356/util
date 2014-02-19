@@ -39,6 +39,7 @@ type ParallelMap struct {
 	Op chan func()
 }
 
+// NewParallelMap
 func NewParallelMap() *ParallelMap {
 	m := &ParallelMap{make(map[keyType]valueType), make(chan func())}
 	go m.backend()
@@ -86,7 +87,7 @@ func (this *ParallelMap) Set(key keyType, value valueType) {
 //
 // Example: An element increasing function
 //
-//    map.ExecuteFunc(func() {
+//    m.ExecuteFunc(func() {
 //        if v, ok := m.Map[i]; ok {
 //            m.Map[i] = v.(int) + 1
 //        } else {
