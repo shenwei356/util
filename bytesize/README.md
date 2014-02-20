@@ -2,7 +2,7 @@ bytesize
 ========
 
 Package for providing a way to show readable values of byte sizes by reediting
-the code from http://golang.org/doc/effective_go.html. It could also parseng
+the code from http://golang.org/doc/effective_go.html. It could also parsing
 byte size text to ByteSize object.
 
 Install

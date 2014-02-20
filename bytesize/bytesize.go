@@ -4,7 +4,7 @@
 
 // Package bytesize provides a way to show readable values of byte size
 // by reediting the code from http://golang.org/doc/effective_go.html.
-// It could also parseng byte size text to ByteSize object.
+// It could also parsing byte size text to ByteSize object.
 package bytesize
 
 import (
@@ -17,6 +17,7 @@ import (
 
 type ByteSize float64
 
+// const for bytesize. B is also specified.
 const (
 	B ByteSize = 1 << (10 * iota)
 	KB
