@@ -1,6 +1,7 @@
 package bytesize
 
 import (
+	// "fmt"
 	"testing"
 )
 
@@ -28,7 +29,7 @@ func Test1(t *testing.T) {
 	}
 }
 
-// test Wrong cases
+// test more
 func Test2(t *testing.T) {
 
 	data := make(map[string]ByteSize)
@@ -36,10 +37,13 @@ func Test2(t *testing.T) {
 	data["-1234.2 kb"] = -1263820.80  // lower case
 	data[" 1234.2  kb "] = 1263820.80 // space
 	data["1234.2 aB"] = -1            // illegal unit
+	data["1234.2 k"] = 1263820.80     // simple unit
+	data["1234.2 "] = 1234.2          // no unit
 
 	for s, info := range data {
 		size, err := Parse([]byte(s))
 		if err != nil {
+			// fmt.Printf("%s\t%s\n", s, err)
 			if err.Error() != ErrText {
 				t.Error("UNKOWN ERROR TYPE")
 			}

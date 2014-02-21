@@ -15,6 +15,7 @@ import (
 	"strings"
 )
 
+// Division operation is needed, so it use float64 instead of uint64
 type ByteSize float64
 
 // const for bytesize. B is also specified.
@@ -53,8 +54,20 @@ func (b ByteSize) String() string {
 	return fmt.Sprintf("%7.2f  B", b)
 }
 
-// Regexp object for ByteSize Text
-var BytesizeRegexp = regexp.MustCompile(`(?i)^\s*([\-\d\.]+)\s*(B|KB|MB|GB|TB|PB|EB|ZB|YB)\s*$`)
+// Regexp object for ByteSize Text. The REGEXP is:
+//
+//     (?i)^\s*([\-\d\.]+)\s*([KMGTPEZY]?B|[BKMGTPEZY]|)\s*$
+//
+// Example:
+//
+//     1234.2 kb   // 1263820.80   legal, lower case
+//     -1234.2 kb  // -1263820.80  legal, lower case, negative value
+//      1234.2  kb // 1263820.80   legal, some space
+//     1234.2 k    // 1263820.80   legal, simple unit
+//     1234.2      // 1234.2       legal, no unit
+//     1234.2 aB   // -1           illegal unit
+//
+var BytesizeRegexp = regexp.MustCompile(`(?i)^\s*([\-\d\.]+)\s*([KMGTPEZY]?B|[BKMGTPEZY]|)\s*$`)
 
 // Error information for Illegal byte size text
 var ErrText = "Illegal bytesize text"
@@ -78,29 +91,32 @@ func Parse(sizeText []byte) (ByteSize, error) {
 	subs := BytesizeRegexp.FindSubmatch(sizeText)
 
 	// no need to check ParseFloat error. BytesizeRegexp could ensure this
+
 	size, _ := strconv.ParseFloat(string(subs[1]), 64)
 	unit := strings.ToUpper(string(subs[2]))
 
 	switch unit {
-	case "B":
+	case "B", "":
 		size = size * float64(B)
-	case "KB":
+	case "KB", "K":
 		size = size * float64(KB)
-	case "MB":
+	case "MB", "M":
 		size = size * float64(MB)
-	case "GB":
+	case "GB", "G":
 		size = size * float64(GB)
-	case "TB":
+	case "TB", "T":
 		size = size * float64(TB)
-	case "PB":
+	case "PB", "P":
 		size = size * float64(PB)
-	case "EB":
+	case "EB", "E":
 		size = size * float64(EB)
-	case "ZB":
+	case "ZB", "Z":
 		size = size * float64(ZB)
-	case "YB":
+	case "YB", "Y":
 		size = size * float64(YB)
 	}
+
+	// fmt.Printf("%s\t=%.2f=\t=%s=\n", sizeText, size, unit)
 
 	return ByteSize(size), nil
 }

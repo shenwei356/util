@@ -11,7 +11,7 @@ This package is "go-gettable", just:
 
     go get github.com/shenwei356/util/bytesize
 
-Example
+Usage
 -------
     
 	fmt.Printf("1024 bytes\t%v\n", bytesize.ByteSize(float64(1024)))
@@ -22,15 +22,29 @@ Example
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Printf("%.0f bytes\n", size)
+	fmt.Printf("\n%.0f bytes\n", size)
 
 
 Result:
 
     1024 bytes         1.00 KB
     13146111 bytes    12.54 MB
+
     1536 bytes
 
+REGEXP for ByteSize Text
+----------------------------
+
+    (?i)^\s*([\-\d\.]+)\s*([KMGTPEZY]?B|[BKMGTPEZY]|)\s*$
+
+Example:
+
+    1234.2 kb   1263820.80   legal, lower case
+    -1234.2 kb  -1263820.80  legal, lower case, negative value
+     1234.2  kb 1263820.80   legal, some space
+    1234.2 k    1263820.80   legal, simple unit
+    1234.2      1234.2       legal, no unit
+    1234.2 aB   -1           illegal unit
 
 
 Copyright (c) 2013, Wei Shen (shenwei356@gmail.com)
