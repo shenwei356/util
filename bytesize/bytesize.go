@@ -15,7 +15,7 @@ import (
 	"strings"
 )
 
-// Division operation is needed, so it use float64 instead of uint64
+// Division operation is needed, so it uses float64 instead of uint64
 type ByteSize float64
 
 // const for bytesize. B is also specified.
@@ -65,7 +65,7 @@ func (b ByteSize) String() string {
 //      1234.2  kb // 1263820.80   legal, some space
 //     1234.2 k    // 1263820.80   legal, simple unit
 //     1234.2      // 1234.2       legal, no unit
-//     1234.2 aB   // -1           illegal unit
+//     1234.2 aB   // 0            illegal unit
 //
 var BytesizeRegexp = regexp.MustCompile(`(?i)^\s*([\-\d\.]+)\s*([KMGTPEZY]?B|[BKMGTPEZY]|)\s*$`)
 

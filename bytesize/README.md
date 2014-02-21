@@ -14,8 +14,8 @@ This package is "go-gettable", just:
 Usage
 -------
     
-	fmt.Printf("1024 bytes\t%v\n", bytesize.ByteSize(float64(1024)))
-	fmt.Printf("13146111 bytes\t%v\n", bytesize.ByteSize(float64(13146111)))
+	fmt.Printf("1024 bytes\t%v\n", bytesize.ByteSize(1024))
+	fmt.Printf("13146111 bytes\t%v\n", bytesize.ByteSize(13146111))
 
     // parsing
 	size, err := bytesize.Parse([]byte("1.5 KB"))
@@ -39,12 +39,12 @@ REGEXP for ByteSize Text
 
 Example:
 
-    1234.2 kb   1263820.80   legal, lower case
-    -1234.2 kb  -1263820.80  legal, lower case, negative value
-     1234.2  kb 1263820.80   legal, some space
-    1234.2 k    1263820.80   legal, simple unit
-    1234.2      1234.2       legal, no unit
-    1234.2 aB   -1           illegal unit
+    1234.2 kb   // 1263820.80   legal, lower case
+    -1234.2 kb  // -1263820.80  legal, lower case, negative value
+     1234.2  kb // 1263820.80   legal, some space
+    1234.2 k    // 1263820.80   legal, simple unit
+    1234.2      // 1234.2       legal, no unit
+    1234.2 aB   // -1           illegal unit
 
 
 Copyright (c) 2013, Wei Shen (shenwei356@gmail.com)
