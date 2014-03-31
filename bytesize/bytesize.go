@@ -70,7 +70,7 @@ func (b ByteSize) String() string {
 //    data["1234.2 aB"] = -1            // illegal unit
 //    data["1234.2 Packages"] = -1      // illegal unit
 //
-var BytesizeRegexp = regexp.MustCompile(`(?i)^\s*(\-?[\d\.]+)\s*([KMGTPEZY]?B|[BKMGTPEZY]|)\s?$`)
+var BytesizeRegexp = regexp.MustCompile(`(?i)^\s*(\-?[\d\.]+)\s*([KMGTPEZY]?B|[BKMGTPEZY]|)\s*$`)
 
 // Error information for Illegal byte size text
 var ErrText = "illegal bytesize text"
