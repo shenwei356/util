@@ -15,9 +15,12 @@ func main() {
 	runtime.GOMAXPROCS(N)
 
 	// constructor
-	m := pmap.NewParallelMap(func(v1 pmap.ValueType, v2 pmap.ValueType) pmap.ValueType {
-		return v1.(int) + v2.(int)
-	}, N)
+	m := pmap.NewParallelMap()
+	// In this exmaple, the Update function will be used.
+	// to call this function, the UpdateValueFunc must be specified.
+	m.SetUpdateValueFunc(func(oldValue pmap.ValueType, newValue pmap.ValueType) pmap.ValueType {
+		return oldValue.(int) + newValue.(int)
+	})
 
 	// number of elements in map
 	var n int = 1 << 9
@@ -29,11 +32,9 @@ func main() {
 		go func() {
 			defer func() {
 				wg.Done()
-				m.UnboundAGoroutine()
 			}()
 
 			for j := 0; j < n; j++ {
-				// update data in map
 				m.Update(j, 1)
 			}
 		}()
@@ -41,7 +42,8 @@ func main() {
 
 	// wait for all operations to complement
 	wg.Wait()
-	m.Wait()
+	// Stop the map backend
+	m.Stop()
 
 	// do something else
 	length := len(m.Map)

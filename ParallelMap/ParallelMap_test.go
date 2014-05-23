@@ -14,11 +14,16 @@ func TestParallelMap(t *testing.T) {
 	N := runtime.NumCPU() * 30
 	runtime.GOMAXPROCS(N)
 
-	m := NewParallelMap(func(v1 ValueType, v2 ValueType) ValueType {
-		return v1.(int) + v2.(int)
-	}, N)
+	// constructor
+	m := NewParallelMap()
+	// In this exmaple, the Update function will be used.
+	// to call this function, the UpdateValueFunc must be specified.
+	m.SetUpdateValueFunc(func(oldValue ValueType, newValue ValueType) ValueType {
+		return oldValue.(int) + newValue.(int)
+	})
 
-	var length int = 1 << 10
+	// number of elements in map
+	var n int = 1 << 10
 
 	var wg sync.WaitGroup
 	for i := 1; i <= N; i++ {
@@ -27,10 +32,9 @@ func TestParallelMap(t *testing.T) {
 		go func() {
 			defer func() {
 				wg.Done()
-				m.UnboundAGoroutine()
 			}()
 
-			for j := 0; j < length; j++ {
+			for j := 0; j < n; j++ {
 				m.Update(j, 1)
 			}
 		}()
@@ -38,10 +42,11 @@ func TestParallelMap(t *testing.T) {
 
 	// wait for all operations to complement
 	wg.Wait()
-	m.Wait()
+	// Stop the map backend
+	m.Stop()
 
 	// check length of map
-	if len(m.Map) != length {
+	if len(m.Map) != n {
 		t.Error("length error")
 	}
 

@@ -24,9 +24,12 @@
 //        runtime.GOMAXPROCS(N)
 //
 //        // constructor
-//        m := pmap.NewParallelMap(func(v1 pmap.ValueType, v2 pmap.ValueType) pmap.ValueType {
-//            return v1.(int) + v2.(int)
-//        }, N)
+//        m := pmap.NewParallelMap()
+//        // In this exmaple, the Update function will be used.
+//        // to call this function, the UpdateValueFunc must be specified.
+//        m.SetUpdateValueFunc(func(oldValue pmap.ValueType, newValue pmap.ValueType) pmap.ValueType {
+//            return oldValue.(int) + newValue.(int)
+//        })
 //
 //        // number of elements in map
 //        var n int = 1 << 9
@@ -38,11 +41,9 @@
 //            go func() {
 //                defer func() {
 //                    wg.Done()
-//                    m.UnboundAGoroutine()
 //                }()
 //
 //                for j := 0; j < n; j++ {
-//                    // update data in map
 //                    m.Update(j, 1)
 //                }
 //            }()
@@ -50,19 +51,20 @@
 //
 //        // wait for all operations to complement
 //        wg.Wait()
-//        m.Wait()
+//        // Stop the map backend
+//        m.Stop()
 //
 //        // do something else
 //        length := len(m.Map)
 //        fmt.Printf("%d elements in map\n", length)
+//    }
 //
 package ParallelMap
 
 import (
 	"fmt"
 	"os"
-	"sync/atomic"
-	"time"
+	"sync"
 )
 
 // The type of the map key is interface{}
@@ -78,40 +80,23 @@ type ParallelMap struct {
 
 	// backend goroutine for sequential operations
 	Op chan func() error
-	// counter of operations in Op
-	opCounter int64
+	// waitgroup for operations
+	wg sync.WaitGroup
 
 	// function to update value
 	UpdateValueFunc func(ValueType, ValueType) ValueType
-
-	// stop signal
-	signalNum  int
-	signalRsv  int
-	signal     chan int
-	signalExit chan int
-	// status checking interval
-	checkInterval time.Duration
 }
 
 // Constructor of ParallelMap
-func NewParallelMap(
-	updateValueFunc func(ValueType, ValueType) ValueType,
-	parallelNum int) *ParallelMap {
-
+func NewParallelMap() *ParallelMap {
 	this := new(ParallelMap)
-
 	this.Map = make(map[KeyType]ValueType)
-
 	this.Op = make(chan func() error)
-	this.opCounter = int64(0)
 
-	this.UpdateValueFunc = updateValueFunc
-
-	this.signalNum = parallelNum
-	this.signal = make(chan int)
-	this.signalExit = make(chan int)
-	this.signalRsv = 0
-	this.checkInterval = time.Millisecond * 50
+	// by default, the Update function is equal to Set function.
+	this.UpdateValueFunc = func(oldValue ValueType, newValue ValueType) ValueType {
+		return newValue
+	}
 
 	go this.backend()
 	return this
@@ -119,57 +104,35 @@ func NewParallelMap(
 
 // Run operation channel as backend
 func (this *ParallelMap) backend() {
-	ticker := time.NewTicker(this.checkInterval)
-
-	var (
-		f   func() error
-		err error
-		sig int
-	)
+	var f func() error
+	var err error
 	for {
 		select {
-		case sig = <-this.signal:
-			if sig == 1 {
-				this.signalRsv += sig
-			} else {
-				// bad signal
-			}
 		case f = <-this.Op:
 			err = f()
 			if err != nil {
 				fmt.Fprintln(os.Stderr, err.Error())
 				os.Exit(1)
 			}
-		case <-ticker.C:
-			if this.signalRsv == this.signalNum &&
-				this.opCounter == 0 {
-				// all operations excuted
-				this.signalExit <- 0
-			}
 		}
 	}
 }
 
-// UnboundAGoroutine
-func (this *ParallelMap) UnboundAGoroutine() {
-	this.signal <- 1
-}
-
-// Wait for all operations to complete
-func (this *ParallelMap) Wait() {
-	<-this.signalExit
+// Stop the map backend
+func (this *ParallelMap) Stop() {
+	this.wg.Wait()
 }
 
 // Getting element of the map is executed sequentially
 func (this *ParallelMap) Get(key KeyType) (ValueType, bool) {
 	c1 := make(chan ValueType)
 	c2 := make(chan bool)
-	this.OpCounterPlusOne()
+	this.wg.Add(1)
 	this.Op <- func() error {
 		value, ok := this.Map[key]
 		c1 <- value
 		c2 <- ok
-		this.OpCounterMinusOne()
+		this.wg.Done()
 		return nil
 	}
 	return <-c1, <-c2
@@ -179,30 +142,43 @@ func (this *ParallelMap) Get(key KeyType) (ValueType, bool) {
 // operation is atomic.
 func (this *ParallelMap) Set(key KeyType, value ValueType) {
 	c := make(chan bool)
-	this.OpCounterPlusOne()
+	this.wg.Add(1)
 	this.Op <- func() error {
 		this.Map[key] = value
 		c <- true
-		this.OpCounterMinusOne()
+		this.wg.Done()
 		return nil
 	}
 	<-c
 }
 
-// Update function
+// To use Update function, a custom UpdateValueFunc must be set.
+// By default, the Update function is equal to Set function.
+//
+// The default UpdateValueFunc is:
+//
+//    this.UpdateValueFunc = func(oldValue ValueType, newValue ValueType) ValueType {
+//        return newValue
+//    }
+func (this *ParallelMap) SetUpdateValueFunc(f func(ValueType, ValueType) ValueType) {
+	this.UpdateValueFunc = f
+}
+
+// Update function.
+// To use Update function, a custom UpdateValueFunc must be set.
 func (this *ParallelMap) Update(key KeyType, value ValueType) {
 	c := make(chan bool)
-	this.OpCounterPlusOne()
+	this.wg.Add(1)
 	this.Op <- func() error {
-		val, ok := this.Map[key]
+		value0, ok := this.Map[key]
 		if ok {
-			this.Map[key] = this.UpdateValueFunc(val, value)
+			this.Map[key] = this.UpdateValueFunc(value0, value)
 		} else {
 			this.Map[key] = value
 		}
 
 		c <- true
-		this.OpCounterMinusOne()
+		this.wg.Done()
 		return nil
 	}
 	<-c
@@ -222,22 +198,12 @@ func (this *ParallelMap) Update(key KeyType, value ValueType) {
 //    })
 func (this *ParallelMap) ExecuteFunc(f func() error) {
 	c := make(chan bool)
-	this.OpCounterPlusOne()
+	this.wg.Add(1)
 	this.Op <- func() error {
 		err := f()
 		c <- true
-		this.OpCounterMinusOne()
+		this.wg.Done()
 		return err
 	}
 	<-c
-}
-
-// OpCounterPlusOne
-func (this *ParallelMap) OpCounterPlusOne() {
-	atomic.AddInt64(&this.opCounter, 1)
-}
-
-// OpCounterMinusOne
-func (this *ParallelMap) OpCounterMinusOne() {
-	atomic.AddInt64(&this.opCounter, -1)
 }
