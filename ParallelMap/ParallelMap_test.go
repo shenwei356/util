@@ -6,25 +6,39 @@ package ParallelMap
 import (
 	"fmt"
 	"runtime"
+	"sync"
 	"testing"
 )
 
 func TestParallelMap(t *testing.T) {
-	N := runtime.NumCPU() * 10
+	N := runtime.NumCPU() * 30
 	runtime.GOMAXPROCS(N)
 
-	m := NewParallelMap()
+	m := NewParallelMap(func(v1 ValueType, v2 ValueType) ValueType {
+		return v1.(int) + v2.(int)
+	}, N)
 
 	var length int = 1 << 10
-	c := make(chan int)
+
+	var wg sync.WaitGroup
 	for i := 1; i <= N; i++ {
-		go IntValuePlusOne(m, length, c)
+		wg.Add(1)
+
+		go func() {
+			defer func() {
+				wg.Done()
+				m.UnboundAGoroutine()
+			}()
+
+			for j := 0; j < length; j++ {
+				m.Update(j, 1)
+			}
+		}()
 	}
 
-	// wait for finish
-	for i := 1; i <= N; i++ {
-		<-c
-	}
+	// wait for all operations to complement
+	wg.Wait()
+	m.Wait()
 
 	// check length of map
 	if len(m.Map) != length {
@@ -37,17 +51,4 @@ func TestParallelMap(t *testing.T) {
 			t.Error(fmt.Sprintf("value error: %d != %d", v.(int), int(N)))
 		}
 	}
-}
-
-func IntValuePlusOne(m *ParallelMap, length int, c chan int) {
-	for i := 0; i < length; i++ {
-		m.ExecuteFunc(func() {
-			if v, ok := m.Map[i]; ok {
-				m.Map[i] = v.(int) + 1
-			} else {
-				m.Map[i] = int(1)
-			}
-		})
-	}
-	c <- 1
 }
