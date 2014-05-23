@@ -26,7 +26,7 @@
 //        // constructor
 //        m := pmap.NewParallelMap()
 //        // In this exmaple, the Update function will be used.
-//        // to call this function, the UpdateValueFunc must be specified.
+//        // To call this function, the UpdateValueFunc must be specified.
 //        m.SetUpdateValueFunc(func(oldValue pmap.ValueType, newValue pmap.ValueType) pmap.ValueType {
 //            return oldValue.(int) + newValue.(int)
 //        })
