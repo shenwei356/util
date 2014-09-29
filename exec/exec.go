@@ -34,7 +34,7 @@ func Command(name string) (*Cmd, error) {
 // the command's standard error when the command starts.
 // It closes when StdoutPipe closed.
 func (c *Cmd) StdoutChannel() (chan string, error) {
-	ch := make(chan string)
+	ch := make(chan string, 100)
 	pipe, err := c.StdoutPipe()
 	if err != nil {
 		return nil, err
@@ -64,7 +64,7 @@ func (c *Cmd) StdoutChannel() (chan string, error) {
 // the command's standard error when the command starts.
 // It closes when StderrPipe closed.
 func (c *Cmd) StderrChannel() (chan string, error) {
-	ch := make(chan string)
+	ch := make(chan string, 100)
 	pipe, err := c.StderrPipe()
 	if err != nil {
 		return nil, err
@@ -93,7 +93,7 @@ func (c *Cmd) StderrChannel() (chan string, error) {
 // StdinChannel returns a channel that will be connected to
 // the command's standard error when the command starts.
 func (c *Cmd) StdinChannel() (chan string, error) {
-	ch := make(chan string)
+	ch := make(chan string, 100)
 	pipe, err := c.StdinPipe()
 	if err != nil {
 		return nil, err
@@ -118,11 +118,11 @@ func parseCommandName(name string) (string, []string, error) {
 
 	var (
 		quoted    bool = false
-		quotation byte
-		tmp       []byte   = make([]byte, 0)
+		quotation rune
+		tmp       []rune   = make([]rune, 0)
 		argv      []string = make([]string, 0)
 	)
-	for _, b := range []byte(name) {
+	for _, b := range []rune(name) {
 		switch b {
 		case ' ':
 			if quoted {
@@ -131,14 +131,14 @@ func parseCommandName(name string) (string, []string, error) {
 				if len(strings.Trim(string(tmp), " ")) > 0 {
 					argv = append(argv, string(tmp))
 				}
-				tmp = make([]byte, 0)
+				tmp = make([]rune, 0)
 			}
 		case '"':
 			if quoted {
 				if quotation == '"' {
 					quoted, quotation = false, '_'
 					argv = append(argv, string(tmp))
-					tmp = make([]byte, 0)
+					tmp = make([]rune, 0)
 				} else {
 					tmp = append(tmp, b)
 				}
@@ -150,7 +150,7 @@ func parseCommandName(name string) (string, []string, error) {
 				if quotation == '\'' {
 					quoted, quotation = false, '_'
 					argv = append(argv, string(tmp))
-					tmp = make([]byte, 0)
+					tmp = make([]rune, 0)
 				} else {
 					tmp = append(tmp, b)
 				}
