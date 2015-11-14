@@ -5,15 +5,9 @@ Package for providing a way to show readable values of byte sizes by reediting
 the code from http://golang.org/doc/effective_go.html. It could also parsing
 byte size text to ByteSize object.
 
-Install
--------
-This package is "go-gettable", just:
-
-    go get github.com/shenwei356/util/bytesize
-
 Usage
 -------
-    
+
 	fmt.Printf("1024 bytes\t%v\n", bytesize.ByteSize(1024))
 	fmt.Printf("13146111 bytes\t%v\n", bytesize.ByteSize(13146111))
 
@@ -48,13 +42,3 @@ Example:
     data["- kb"] = -1                  illegal value
     data["1234.2 aB"] = -1             illegal unit
     data["1234.2 Packages"] = -1       illegal unit
-
-
-Copyright (c) 2013, Wei Shen (shenwei356@gmail.com)
-
-Documentation
--------------
-
-[See documentation on gowalker for more detail](http://gowalker.org/github.com/shenwei356/util/bytesize).
-
-[MIT License](https://github.com/shenwei356/util/blob/master/bytesize/LICENSE)

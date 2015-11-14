@@ -122,7 +122,7 @@ func parseCommandName(name string) (string, []string, error) {
 		tmp       []rune   = make([]rune, 0)
 		argv      []string = make([]string, 0)
 	)
-	for _, b := range []rune(name) {
+	for _, b := range name {
 		switch b {
 		case ' ':
 			if quoted {
