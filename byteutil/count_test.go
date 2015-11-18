@@ -18,11 +18,14 @@ func TestCountOfByteAndAlphabet(t *testing.T) {
 func TestSortCountOfByte(t *testing.T) {
 	s := []byte("cccaaadd")
 	countList := SortCountOfByte(CountOfByte(s), true)
-	if !(countList[0].Byte == 'a' && countList[0].Count == 3) {
+	// fmt.Println(countList)
+	// if !(countList[0].Count == 3 && (countList[0].Byte == 'a' || countList[0].Byte == 'c')) {
+	if !(countList[0].Count == 3 && countList[0].Byte == 'a') {
 		t.Error("Test failed: TestSortCountOfByte")
 	}
 
 	countList = SortCountOfByte(CountOfByte(s), false)
+	// fmt.Println(countList)
 	if !(countList[0].Byte == 'd' && countList[0].Count == 2) {
 		t.Error("Test failed: TestSortCountOfByte")
 	}

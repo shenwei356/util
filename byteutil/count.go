@@ -11,9 +11,22 @@ type ByteCount struct {
 // ByteCountList is slice of Bytecount
 type ByteCountList []ByteCount
 
-func (b ByteCountList) Len() int           { return len(b) }
-func (b ByteCountList) Less(i, j int) bool { return b[i].Count < b[j].Count || b[i].Byte < b[j].Byte }
-func (b ByteCountList) Swap(i, j int)      { b[i], b[j] = b[j], b[i] }
+func (b ByteCountList) Len() int { return len(b) }
+func (b ByteCountList) Less(i, j int) bool {
+	// return b[i].Count < b[j].Count
+	// This will return unwanted result: return b[i].Count < b[j].Count || b[i].Byte < b[j].Byte
+	if b[i].Count < b[j].Count {
+		return true
+	}
+	if b[i].Count == b[j].Count {
+		if b[i].Byte < b[j].Byte {
+			return true
+		}
+		return false
+	}
+	return false
+}
+func (b ByteCountList) Swap(i, j int) { b[i], b[j] = b[j], b[i] }
 
 // ReversedByteCountList is Reversed ByteCountList
 type ReversedByteCountList struct {
@@ -22,7 +35,17 @@ type ReversedByteCountList struct {
 
 // Less is different from the Less of ByteCountList
 func (b ReversedByteCountList) Less(i, j int) bool {
-	return b.ByteCountList[i].Count > b.ByteCountList[j].Count || b.ByteCountList[i].Byte < b.ByteCountList[j].Byte
+	// return b.ByteCountList[i].Count > b.ByteCountList[j].Count
+	if b.ByteCountList[i].Count > b.ByteCountList[j].Count {
+		return true
+	}
+	if b.ByteCountList[i].Count == b.ByteCountList[j].Count {
+		if b.ByteCountList[i].Byte < b.ByteCountList[j].Byte {
+			return true
+		}
+		return false
+	}
+	return false
 }
 
 // CountOfByte returns the count of byte for a byte slice
