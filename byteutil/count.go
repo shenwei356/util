@@ -4,22 +4,22 @@ import "sort"
 
 // ByteCount is a struct store count of byte
 type ByteCount struct {
-	Byte  byte
+	Key   byte
 	Count int
 }
 
-// ByteCountList is slice of Bytecount
+// ByteCountList is slice of ByteCount
 type ByteCountList []ByteCount
 
 func (b ByteCountList) Len() int { return len(b) }
 func (b ByteCountList) Less(i, j int) bool {
 	// return b[i].Count < b[j].Count
-	// This will return unwanted result: return b[i].Count < b[j].Count || b[i].Byte < b[j].Byte
+	// This will return unwanted result: return b[i].Count < b[j].Count || b[i].Key < b[j].Key
 	if b[i].Count < b[j].Count {
 		return true
 	}
 	if b[i].Count == b[j].Count {
-		if b[i].Byte < b[j].Byte {
+		if b[i].Key < b[j].Key {
 			return true
 		}
 		return false
@@ -40,7 +40,7 @@ func (b ReversedByteCountList) Less(i, j int) bool {
 		return true
 	}
 	if b.ByteCountList[i].Count == b.ByteCountList[j].Count {
-		if b.ByteCountList[i].Byte < b.ByteCountList[j].Byte {
+		if b.ByteCountList[i].Key < b.ByteCountList[j].Key {
 			return true
 		}
 		return false

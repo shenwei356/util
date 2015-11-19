@@ -19,14 +19,14 @@ func TestSortCountOfByte(t *testing.T) {
 	s := []byte("cccaaadd")
 	countList := SortCountOfByte(CountOfByte(s), true)
 	// fmt.Println(countList)
-	// if !(countList[0].Count == 3 && (countList[0].Byte == 'a' || countList[0].Byte == 'c')) {
-	if !(countList[0].Count == 3 && countList[0].Byte == 'a') {
+	// if !(countList[0].Count == 3 && (countList[0].Key == 'a' || countList[0].Key == 'c')) {
+	if !(countList[0].Count == 3 && countList[0].Key == 'a') {
 		t.Error("Test failed: TestSortCountOfByte")
 	}
 
 	countList = SortCountOfByte(CountOfByte(s), false)
 	// fmt.Println(countList)
-	if !(countList[0].Byte == 'd' && countList[0].Count == 2) {
+	if !(countList[0].Key == 'd' && countList[0].Count == 2) {
 		t.Error("Test failed: TestSortCountOfByte")
 	}
 }

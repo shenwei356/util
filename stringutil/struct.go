@@ -2,24 +2,24 @@ package stringutil
 
 import "sort"
 
-// StringCount is a struct store count of String
+// StringCount is a struct store count of Key
 type StringCount struct {
-	String string
-	Count  int
+	Key   string
+	Count int
 }
 
-// StringCountList is slice of Stringcount
+// StringCountList is slice of Keycount
 type StringCountList []StringCount
 
 func (b StringCountList) Len() int { return len(b) }
 func (b StringCountList) Less(i, j int) bool {
 	// return b[i].Count < b[j].Count
-	// This will return unwanted result: return b[i].Count < b[j].Count || b[i].String < b[j].String
+	// This will return unwanted result: return b[i].Count < b[j].Count || b[i].Key < b[j].Key
 	if b[i].Count < b[j].Count {
 		return true
 	}
 	if b[i].Count == b[j].Count {
-		if b[i].String < b[j].String {
+		if b[i].Key < b[j].Key {
 			return true
 		}
 		return false
@@ -40,7 +40,7 @@ func (b ReversedStringCountList) Less(i, j int) bool {
 		return true
 	}
 	if b.StringCountList[i].Count == b.StringCountList[j].Count {
-		if b.StringCountList[i].String < b.StringCountList[j].String {
+		if b.StringCountList[i].Key < b.StringCountList[j].Key {
 			return true
 		}
 		return false
@@ -48,7 +48,7 @@ func (b ReversedStringCountList) Less(i, j int) bool {
 	return false
 }
 
-// CountOfString returns the count of String for a String slice
+// CountOfString returns the count of Key for a Key slice
 func CountOfString(s []string) map[string]int {
 	count := make(map[string]int)
 	for _, b := range s {
@@ -57,7 +57,7 @@ func CountOfString(s []string) map[string]int {
 	return count
 }
 
-// SortCountOfString sorts count of String
+// SortCountOfString sorts count of Key
 func SortCountOfString(count map[string]int, reverse bool) StringCountList {
 	countList := make(StringCountList, len(count))
 	i := 0
