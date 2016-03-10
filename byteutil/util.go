@@ -46,3 +46,35 @@ func WrapByteSlice(s []byte, width int) []byte {
 	}
 	return buffer.Bytes()
 }
+
+// SubSlice provides similar slice indexing as python with one exception
+// that end could be equal to 0.
+// So we could get the last element by SubSlice(s, -1, 0)
+// or get the whole element by SubSlice(s, 0, 0)
+func SubSlice(slice []byte, start int, end int) []byte {
+	if start == 0 && end == 0 {
+		return slice
+	}
+	if start == end || (start < 0 && end > 0) {
+		return []byte{}
+	}
+	l := len(slice)
+	s, e := start, end
+
+	if s < 0 {
+		s = l + s
+		if s < 1 {
+			s = 0
+		}
+	}
+	if e < 0 {
+		e = l + e
+		if e < 0 {
+			e = 0
+		}
+	}
+	if e == 0 || e > l {
+		e = l
+	}
+	return slice[s:e]
+}
