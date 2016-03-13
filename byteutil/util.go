@@ -78,3 +78,25 @@ func SubSlice(slice []byte, start int, end int) []byte {
 	}
 	return slice[s:e]
 }
+
+// ByteToLower lowers a byte
+func ByteToLower(b byte) byte {
+	if b <= '\u007F' {
+		if 'A' <= b && b <= 'Z' {
+			b += 'a' - 'A'
+		}
+		return b
+	}
+	return b
+}
+
+// ByteToUpper upper a byte
+func ByteToUpper(b byte) byte {
+	if b <= '\u007F' {
+		if 'a' <= b && b <= 'z' {
+			b -= 'a' - 'A'
+		}
+		return b
+	}
+	return b
+}
