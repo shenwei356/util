@@ -100,3 +100,50 @@ func ByteToUpper(b byte) byte {
 	}
 	return b
 }
+
+// MakeQuerySlice is used to replace map.
+// see: http://blog.shenwei.me/map-is-not-the-fastest-in-go/
+func MakeQuerySlice(letters []byte) []byte {
+	max := -1
+	for i := 0; i < len(letters); i++ {
+		j := int(letters[i])
+		if max < j {
+			max = j
+		}
+	}
+	querySlice := make([]byte, max+1)
+	for i := 0; i < len(letters); i++ {
+		querySlice[int(letters[i])] = letters[i]
+	}
+	return querySlice
+}
+
+// Split splits a byte slice by giveen letters.
+// It's much faster than regexp.Split
+func Split(slice []byte, letters []byte) [][]byte {
+	querySlice := MakeQuerySlice(letters)
+	results := [][]byte{}
+	tmp := []byte{}
+
+	var j int
+	var value byte
+	var sliceSize = len(querySlice)
+	for _, b := range slice {
+		j = int(b)
+		if j >= sliceSize { // not delimiter byte
+			tmp = append(tmp, b)
+			continue
+		}
+		value = querySlice[j]
+		if value == 0 { // not delimiter byte
+			tmp = append(tmp, b)
+			continue
+		} else {
+			if len(tmp) > 0 {
+				results = append(results, tmp)
+				tmp = []byte{}
+			}
+		}
+	}
+	return results
+}
