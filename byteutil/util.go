@@ -145,5 +145,8 @@ func Split(slice []byte, letters []byte) [][]byte {
 			}
 		}
 	}
+	if len(tmp) > 0 {
+		results = append(results, tmp)
+	}
 	return results
 }
