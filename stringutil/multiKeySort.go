@@ -30,11 +30,11 @@ func (list MultiKeyStringSliceList) Less(i, j int) bool {
 	for _, t := range *list[i].SortTypes {
 		var v int
 		if t.Number {
-			a, err := strconv.ParseFloat(list[i].Value[t.Index], 64)
+			a, err := strconv.ParseFloat(removeComma(list[i].Value[t.Index]), 64)
 			if err != nil {
 				a = 0
 			}
-			b, err := strconv.ParseFloat(list[j].Value[t.Index], 64)
+			b, err := strconv.ParseFloat(removeComma(list[j].Value[t.Index]), 64)
 			if err != nil {
 				b = 0
 			}
@@ -63,4 +63,16 @@ func (list MultiKeyStringSliceList) Less(i, j int) bool {
 		}
 	}
 	return true
+}
+
+func removeComma(s string) string {
+	newSlice := []byte{}
+	for i := 0; i < len(s); i++ {
+		switch s[i] {
+		case ',':
+		default:
+			newSlice = append(newSlice, s[i])
+		}
+	}
+	return string(newSlice)
 }
