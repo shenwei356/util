@@ -12,10 +12,18 @@ func ReverseByteSlice(s []byte) []byte {
 	}
 
 	// reverse
-	for i, j := 0, len(t)-1; i < j; i, j = i+1, j-1 {
+	for i, j := 0, l-1; i < j; i, j = i+1, j-1 {
 		t[i], t[j] = t[j], t[i]
 	}
 	return t
+}
+
+// ReverseByteSliceInplace reverses a byte slice
+func ReverseByteSliceInplace(s []byte) {
+	// reverse
+	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
+		s[i], s[j] = s[j], s[i]
+	}
 }
 
 // WrapByteSlice wraps byte slice
