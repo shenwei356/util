@@ -1,6 +1,9 @@
 package byteutil
 
-import "bytes"
+import (
+	"bytes"
+	// "fmt"
+)
 
 // ReverseByteSlice reverses a byte slice
 func ReverseByteSlice(s []byte) []byte {
@@ -53,6 +56,53 @@ func WrapByteSlice(s []byte, width int) []byte {
 		}
 	}
 	return buffer.Bytes()
+}
+
+// WrapByteSliceInplace wraps byte slice in place.
+// Sadly, it's too slow. Never use this!
+func WrapByteSliceInplace(s []byte, width int) []byte {
+	if width < 1 {
+		return s
+	}
+	var l, lines int
+
+	l = len(s)
+	if l%width == 0 {
+		lines = l/width - 1
+	} else {
+		lines = int(l / width)
+	}
+
+	var end int
+	j := 0
+	for i := 0; i <= lines; i++ {
+		end = (i+1)*width + j
+		if end >= l {
+			break
+		}
+		// fmt.Printf("len:%d, lines:%d, i:%d, j:%d, end:%d\n", l, lines, i, j, end)
+		if i < lines {
+
+			// https://github.com/golang/go/wiki/SliceTricks
+			// Sadly, it's too slow
+			// s = append(s, []byte(" ")[0])
+			// copy(s[end+1:], s[end:])
+			// s[end] = []byte("\n")[0]
+
+			// slow too
+			s = append(s[:end], append([]byte("\n"), s[end:]...)...)
+
+			l = len(s)
+			if l%width == 0 {
+				lines = l/width - 1
+			} else {
+				lines = int(l / width)
+			}
+
+			j++
+		}
+	}
+	return s
 }
 
 // SubSlice provides similar slice indexing as python with one exception
