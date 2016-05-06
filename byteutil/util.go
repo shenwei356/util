@@ -3,6 +3,7 @@ package byteutil
 import (
 	"bytes"
 	// "fmt"
+	"unsafe"
 )
 
 // ReverseByteSlice reverses a byte slice
@@ -208,4 +209,9 @@ func Split(slice []byte, letters []byte) [][]byte {
 		results = append(results, tmp)
 	}
 	return results
+}
+
+// Bytes2Str convert byte slice to string without GC
+func Bytes2Str(b []byte) string {
+	return *(*string)(unsafe.Pointer(&b))
 }
