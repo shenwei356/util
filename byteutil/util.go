@@ -36,6 +36,9 @@ func WrapByteSlice(s []byte, width int) []byte {
 		return s
 	}
 	l := len(s)
+	if l == 0 {
+		return []byte{}
+	}
 	var lines int
 	if l%width == 0 {
 		lines = l/width - 1
