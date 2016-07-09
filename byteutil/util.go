@@ -3,6 +3,7 @@ package byteutil
 import (
 	"bytes"
 	// "fmt"
+	"github.com/shenwei356/bpool"
 	"unsafe"
 )
 
@@ -37,7 +38,7 @@ func WrapByteSlice(s []byte, width int) []byte {
 	}
 	l := len(s)
 	if l == 0 {
-		return []byte{}
+		return s
 	}
 	var lines int
 	if l%width == 0 {
@@ -61,6 +62,69 @@ func WrapByteSlice(s []byte, width int) []byte {
 		}
 	}
 	return buffer.Bytes()
+}
+
+// BufferedByteSliceWrapper is used to wrap byte slice,
+// using a buffer of bytes.Buffer to reduce GC
+type BufferedByteSliceWrapper struct {
+	pool *bpool.SizedBufferPool
+}
+
+// NewBufferedByteSliceWrapper create a new BufferedByteSliceWrapper
+func NewBufferedByteSliceWrapper(size, alloc int) *BufferedByteSliceWrapper {
+	return &BufferedByteSliceWrapper{bpool.NewSizedBufferPool(size, alloc)}
+}
+
+// NewBufferedByteSliceWrapper2 could pre alloc space according to slice and widht
+func NewBufferedByteSliceWrapper2(size int, l, width int) *BufferedByteSliceWrapper {
+	var lines int
+	if l%width == 0 {
+		lines = l/width - 1
+	} else {
+		lines = int(l / width)
+	}
+	return &BufferedByteSliceWrapper{bpool.NewSizedBufferPool(size, l+lines)}
+}
+
+// Recycle a buffer
+func (w *BufferedByteSliceWrapper) Recycle(b *bytes.Buffer) {
+	w.pool.Put(b)
+}
+
+// Wrap a byte slice. DO NOT FORGET call Recycle() with the returned buffer
+func (w *BufferedByteSliceWrapper) Wrap(s []byte, width int) ([]byte, *bytes.Buffer) {
+	if width < 1 {
+		return s, nil
+	}
+	l := len(s)
+	if l == 0 {
+		return s, nil
+	}
+	var lines int
+	if l%width == 0 {
+		lines = l/width - 1
+	} else {
+		lines = int(l / width)
+	}
+	// var buffer bytes.Buffer
+	// buffer := bytes.NewBuffer(make([]byte, 0, l+lines))
+
+	buffer := w.pool.Get()
+
+	var start, end int
+	for i := 0; i <= lines; i++ {
+		start = i * width
+		end = (i + 1) * width
+		if end > l {
+			end = l
+		}
+
+		buffer.Write(s[start:end])
+		if i < lines {
+			buffer.WriteString("\n")
+		}
+	}
+	return buffer.Bytes(), buffer
 }
 
 // WrapByteSliceInplace wraps byte slice in place.
