@@ -72,11 +72,26 @@ type BufferedByteSliceWrapper struct {
 
 // NewBufferedByteSliceWrapper create a new BufferedByteSliceWrapper
 func NewBufferedByteSliceWrapper(size, alloc int) *BufferedByteSliceWrapper {
+	if size < 1 {
+		panic("buffer number should be > 0")
+	}
+	if alloc < 1 {
+		panic("buffer size should be > 0")
+	}
 	return &BufferedByteSliceWrapper{bpool.NewSizedBufferPool(size, alloc)}
 }
 
 // NewBufferedByteSliceWrapper2 could pre alloc space according to slice and widht
 func NewBufferedByteSliceWrapper2(size int, l, width int) *BufferedByteSliceWrapper {
+	if size < 1 {
+		panic("buffer number should be > 0")
+	}
+	if l < 1 {
+		panic("buffer size should be > 0")
+	}
+	if width <= 0 {
+		return NewBufferedByteSliceWrapper(size, l)
+	}
 	var lines int
 	if l%width == 0 {
 		lines = l/width - 1
