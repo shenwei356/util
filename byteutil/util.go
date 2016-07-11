@@ -81,24 +81,24 @@ func NewBufferedByteSliceWrapper(size, alloc int) *BufferedByteSliceWrapper {
 	return &BufferedByteSliceWrapper{bpool.NewSizedBufferPool(size, alloc)}
 }
 
-// NewBufferedByteSliceWrapper2 could pre alloc space according to slice and widht
-func NewBufferedByteSliceWrapper2(size int, l, width int) *BufferedByteSliceWrapper {
+// NewBufferedByteSliceWrapper2 could pre-alloc space according to length of slice and width
+func NewBufferedByteSliceWrapper2(size int, length, width int) *BufferedByteSliceWrapper {
 	if size < 1 {
 		panic("buffer number should be > 0")
 	}
-	if l < 1 {
+	if length < 1 {
 		panic("buffer size should be > 0")
 	}
 	if width <= 0 {
-		return NewBufferedByteSliceWrapper(size, l)
+		return NewBufferedByteSliceWrapper(size, length)
 	}
 	var lines int
-	if l%width == 0 {
-		lines = l/width - 1
+	if length%width == 0 {
+		lines = length/width - 1
 	} else {
-		lines = int(l / width)
+		lines = int(length / width)
 	}
-	return &BufferedByteSliceWrapper{bpool.NewSizedBufferPool(size, l+lines)}
+	return &BufferedByteSliceWrapper{bpool.NewSizedBufferPool(size, length+lines)}
 }
 
 // Recycle a buffer
