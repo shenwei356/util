@@ -84,10 +84,12 @@ func NewBufferedByteSliceWrapper(size, alloc int) *BufferedByteSliceWrapper {
 // NewBufferedByteSliceWrapper2 could pre-alloc space according to length of slice and width
 func NewBufferedByteSliceWrapper2(size int, length, width int) *BufferedByteSliceWrapper {
 	if size < 1 {
-		panic("buffer number should be > 0")
+		// panic("buffer number should be > 0")
+		size = 1
 	}
 	if length < 1 {
-		panic("buffer size should be > 0")
+		// panic("buffer size should be > 0")
+		length = 1
 	}
 	if width <= 0 {
 		return NewBufferedByteSliceWrapper(size, length)
