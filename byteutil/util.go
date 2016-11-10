@@ -295,7 +295,7 @@ func Split(slice []byte, letters []byte) [][]byte {
 	return results
 }
 
-// Bytes2Str convert byte slice to string without GC
+// Bytes2Str convert byte slice to string without GC. Warning: it's unsafe!!!
 func Bytes2Str(b []byte) string {
 	return *(*string)(unsafe.Pointer(&b))
 }

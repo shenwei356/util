@@ -16,9 +16,25 @@ func Split(slice string, letters string) []string {
 	return result2
 }
 
-// Str2Bytes convert string to byte slice
+// Str2Bytes convert string to byte slice. Warning: it's unsafe!!!
 func Str2Bytes(s string) []byte {
 	x := (*[2]uintptr)(unsafe.Pointer(&s))
 	h := [3]uintptr{x[0], x[1], x[1]}
 	return *(*[]byte)(unsafe.Pointer(&h))
+}
+
+// ReverseStringSlice reverses StringSlice
+func ReverseStringSlice(s []string) []string {
+	// make a copy of s
+	l := len(s)
+	t := make([]string, l)
+	for i := 0; i < l; i++ {
+		t[i] = s[i]
+	}
+
+	// reverse
+	for i, j := 0, l-1; i < j; i, j = i+1, j-1 {
+		t[i], t[j] = t[j], t[i]
+	}
+	return t
 }
