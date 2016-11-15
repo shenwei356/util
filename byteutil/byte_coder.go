@@ -16,8 +16,8 @@ var (
 type ByteCoder struct {
 	Alphabet           []byte
 	alphabetQuerySlice []byte
-	bytes2int            []int
-	int2bytes            []byte
+	bytes2int          []int
+	int2bytes          []byte
 }
 
 // NewByteCoder Create a ByteCoder type

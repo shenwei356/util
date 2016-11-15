@@ -19,7 +19,7 @@ func Test1(t *testing.T) {
 		size, err := Parse([]byte(s))
 
 		if err != nil && err.Error() != ErrText {
-			t.Error("UNKOWN ERROR TYPE")
+			t.Error("UNKNOWN ERROR TYPE")
 		}
 
 		// size == "129.33 KB"
@@ -49,7 +49,7 @@ func Test2(t *testing.T) {
 		if err != nil {
 			// fmt.Printf("%s\t%s\n", s, err)
 			if err.Error() != ErrText || info != -1 {
-				t.Error("unkown error type or test sample error")
+				t.Error("unknown error type or test sample error")
 			}
 		} else { // check value
 			if size != info {

@@ -2,6 +2,7 @@ util
 ========
 
 [![GoDoc](https://godoc.org/github.com/shenwei356/util?status.svg)](https://godoc.org/github.com/shenwei356/util)
+[![Go Report Card](https://goreportcard.com/badge/github.com/shenwei356/util)](https://goreportcard.com/report/github.com/shenwei356/util)
 
 Utility packges
 
