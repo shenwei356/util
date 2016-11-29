@@ -3,6 +3,7 @@ package pathutil
 import (
 	"fmt"
 	"os"
+	"regexp"
 )
 
 // Exists checks if a file or directory exists.
@@ -58,4 +59,12 @@ func isDir(path string) (bool, error) {
 		return false, err
 	}
 	return fi.IsDir(), nil
+}
+
+// ReInvalidPathChars is used to remove invalid path characters
+var ReInvalidPathChars = regexp.MustCompile(`[<>:"/\\\|?\*]+`)
+
+// RemoveInvalidPathChars removes invalid characters for path
+func RemoveInvalidPathChars(s string, repl string) string {
+	return ReInvalidPathChars.ReplaceAllString(s, repl)
 }
