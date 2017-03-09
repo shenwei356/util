@@ -3,8 +3,9 @@ package byteutil
 import (
 	"bytes"
 	// "fmt"
-	"github.com/shenwei356/bpool"
 	"unsafe"
+
+	"github.com/shenwei356/bpool"
 )
 
 // ReverseByteSlice reverses a byte slice
@@ -298,4 +299,27 @@ func Split(slice []byte, letters []byte) [][]byte {
 // Bytes2Str convert byte slice to string without GC. Warning: it's unsafe!!!
 func Bytes2Str(b []byte) string {
 	return *(*string)(unsafe.Pointer(&b))
+}
+
+// CountBytes counts given ASCII characters in a byte slice
+func CountBytes(seq, letters []byte) int {
+	if len(letters) == 0 || len(seq) == 0 {
+		return 0
+	}
+
+	// do not use map
+	querySlice := make([]byte, 256)
+	for i := 0; i < len(letters); i++ {
+		querySlice[int(letters[i])] = letters[i]
+	}
+
+	var g byte
+	var n int
+	for i := 0; i < len(seq); i++ {
+		g = querySlice[int(seq[i])]
+		if g > 0 { // not gap
+			n++
+		}
+	}
+	return n
 }
