@@ -7,9 +7,12 @@ import (
 
 // SortType defines the sort type
 type SortType struct {
-	Index   int
-	Number  bool
-	Reverse bool
+	Index       int
+	IgnoreCase  bool
+	Number      bool
+	Reverse     bool
+	UserDefined bool
+	Levels      map[string]int
 }
 
 // MultiKeyStringSlice sort [][]string by multiple keys
@@ -27,14 +30,16 @@ func (list MultiKeyStringSliceList) Swap(i, j int) {
 }
 
 func (list MultiKeyStringSliceList) Less(i, j int) bool {
+	var err error
+	var v int
 	for _, t := range *list[i].SortTypes {
-		var v int
 		if t.Number {
-			a, err := strconv.ParseFloat(removeComma(list[i].Value[t.Index]), 64)
+			var a, b float64
+			a, err = strconv.ParseFloat(removeComma(list[i].Value[t.Index]), 64)
 			if err != nil {
 				a = 0
 			}
-			b, err := strconv.ParseFloat(removeComma(list[j].Value[t.Index]), 64)
+			b, err = strconv.ParseFloat(removeComma(list[j].Value[t.Index]), 64)
 			if err != nil {
 				b = 0
 			}
@@ -45,8 +50,40 @@ func (list MultiKeyStringSliceList) Less(i, j int) bool {
 			} else {
 				v = 1
 			}
+		} else if t.UserDefined {
+			var a, b int
+			var okA, okB bool
+			if t.IgnoreCase {
+				a, okA = t.Levels[strings.ToLower(list[i].Value[t.Index])]
+				b, okB = t.Levels[strings.ToLower(list[j].Value[t.Index])]
+			} else {
+				a, okA = t.Levels[list[i].Value[t.Index]]
+				b, okB = t.Levels[list[j].Value[t.Index]]
+			}
+			if okA {
+				if okB {
+					if a < b {
+						v = -1
+					} else if a == b {
+						v = 0
+					} else {
+						v = 1
+					}
+				} else {
+					v = -1
+				}
+			} else if okB {
+				v = 1
+			} else {
+				v = strings.Compare(list[i].Value[t.Index], list[j].Value[t.Index])
+			}
 		} else {
-			v = strings.Compare(list[i].Value[t.Index], list[j].Value[t.Index])
+			if t.IgnoreCase {
+				v = strings.Compare(strings.ToLower(list[i].Value[t.Index]),
+					strings.ToLower(list[j].Value[t.Index]))
+			} else {
+				v = strings.Compare(list[i].Value[t.Index], list[j].Value[t.Index])
+			}
 		}
 
 		if v == 0 {
