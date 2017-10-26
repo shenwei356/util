@@ -1,6 +1,7 @@
 package stringutil
 
 import (
+	"bytes"
 	"unsafe"
 
 	"github.com/shenwei356/util/byteutil"
@@ -44,4 +45,21 @@ func ReverseStringSliceInplace(s []string) {
 	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
 		s[i], s[j] = s[j], s[i]
 	}
+}
+
+// EscapeSymbols escape custom symbols
+func EscapeSymbols(s, symbols string) string {
+	m := make(map[rune]struct{})
+	for _, c := range symbols {
+		m[c] = struct{}{}
+	}
+	var buf bytes.Buffer
+	var ok bool
+	for _, c := range s {
+		if _, ok = m[c]; ok {
+			buf.WriteByte('\\')
+		}
+		buf.WriteRune(c)
+	}
+	return buf.String()
 }
