@@ -2,6 +2,7 @@ package stringutil
 
 import (
 	"bytes"
+	"regexp"
 	"unsafe"
 
 	"github.com/shenwei356/util/byteutil"
@@ -62,4 +63,32 @@ func EscapeSymbols(s, symbols string) string {
 		buf.WriteRune(c)
 	}
 	return buf.String()
+}
+
+// UnEscaper returns a function for unescaping string
+func UnEscaper() func(s string) string {
+	var re = regexp.MustCompile(`\\([abfnrtv'"?])`)
+	var m = map[string]string{
+		`\a`: "\a",
+		`\b`: "\b",
+		`\f`: "\f",
+		`\n`: "\n",
+		`\r`: "\r",
+		`\t`: "\t",
+		`\v`: "\v",
+		`\\`: "\\",
+		`\'`: "'",
+		`\"`: "\"",
+		`\?`: "?",
+	}
+	var mapping = func(key string) string {
+		if v, ok := m[key]; ok {
+			return v
+		}
+		return key
+	}
+
+	return func(s string) string {
+		return re.ReplaceAllStringFunc(s, mapping)
+	}
 }
