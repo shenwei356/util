@@ -1,6 +1,10 @@
 package stringutil
 
-import "bytes"
+import (
+	"bytes"
+
+	"github.com/shenwei356/natsort"
+)
 
 // String2ByteSlice is for sortint of string-[]byte pairs
 type String2ByteSlice struct {
@@ -11,8 +15,14 @@ type String2ByteSlice struct {
 // String2ByteSliceList is list of string2ByteSlice
 type String2ByteSliceList []String2ByteSlice
 
+// NaturalOrder is the global variable for sorting String2ByteSlice
+var NaturalOrder = false
+
 func (list String2ByteSliceList) Len() int { return len(list) }
 func (list String2ByteSliceList) Less(i, j int) bool {
+	if NaturalOrder {
+		return natsort.Compare(list[i].Key, list[j].Key)
+	}
 	return list[i].Key < list[j].Key
 }
 func (list String2ByteSliceList) Swap(i, j int) {
@@ -26,6 +36,9 @@ type ReversedString2ByteSliceList struct {
 
 // Less ...
 func (list ReversedString2ByteSliceList) Less(i, j int) bool {
+	if NaturalOrder {
+		return !natsort.Compare(list.String2ByteSliceList[i].Key, list.String2ByteSliceList[j].Key)
+	}
 	return list.String2ByteSliceList[i].Key > list.String2ByteSliceList[j].Key
 }
 
