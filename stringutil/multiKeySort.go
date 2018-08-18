@@ -3,15 +3,18 @@ package stringutil
 import (
 	"strconv"
 	"strings"
+
+	"github.com/shenwei356/natsort"
 )
 
 // SortType defines the sort type
 type SortType struct {
 	Index       int
 	IgnoreCase  bool
+	Natural     bool // natural order
 	Number      bool
-	Reverse     bool
 	UserDefined bool
+	Reverse     bool
 	Levels      map[string]int
 }
 
@@ -33,7 +36,14 @@ func (list MultiKeyStringSliceList) Less(i, j int) bool {
 	var err error
 	var v int
 	for _, t := range *list[i].SortTypes {
-		if t.Number {
+		if t.Natural {
+			natsort.IgnoreCase = t.IgnoreCase
+			if natsort.Compare(list[i].Value[t.Index], list[j].Value[t.Index]) {
+				v = -1
+			} else {
+				v = 1
+			}
+		} else if t.Number {
 			var a, b float64
 			a, err = strconv.ParseFloat(removeComma(list[i].Value[t.Index]), 64)
 			if err != nil {
