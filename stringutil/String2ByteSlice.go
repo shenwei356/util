@@ -18,10 +18,13 @@ type String2ByteSliceList []String2ByteSlice
 // NaturalOrder is the global variable for sorting String2ByteSlice
 var NaturalOrder = false
 
+// IgnoreCase for ignoring case when sorting in natural order
+var IgnoreCase = false
+
 func (list String2ByteSliceList) Len() int { return len(list) }
 func (list String2ByteSliceList) Less(i, j int) bool {
 	if NaturalOrder {
-		return natsort.Compare(list[i].Key, list[j].Key)
+		return natsort.Compare(list[i].Key, list[j].Key, IgnoreCase)
 	}
 	return list[i].Key < list[j].Key
 }
@@ -37,7 +40,7 @@ type ReversedString2ByteSliceList struct {
 // Less ...
 func (list ReversedString2ByteSliceList) Less(i, j int) bool {
 	if NaturalOrder {
-		return !natsort.Compare(list.String2ByteSliceList[i].Key, list.String2ByteSliceList[j].Key)
+		return !natsort.Compare(list.String2ByteSliceList[i].Key, list.String2ByteSliceList[j].Key, IgnoreCase)
 	}
 	return list.String2ByteSliceList[i].Key > list.String2ByteSliceList[j].Key
 }
