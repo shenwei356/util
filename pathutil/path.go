@@ -18,7 +18,6 @@ func Exists(path string) (bool, error) {
 	return false, err
 }
 
-
 // LinkExists checks if link exists.
 func LinkExists(path string) (bool, error) {
 	_, err := os.Lstat(path)
@@ -66,7 +65,7 @@ func IsEmpty(path string) (bool, error) {
 }
 
 // IsDir checks if a given path is a directory.
-func isDir(path string) (bool, error) {
+func IsDir(path string) (bool, error) {
 	fi, err := os.Stat(path)
 	if err != nil {
 		return false, err
