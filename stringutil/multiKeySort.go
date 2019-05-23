@@ -37,6 +37,16 @@ func (list MultiKeyStringSliceList) Less(i, j int) bool {
 	var v int
 	for _, t := range *list[i].SortTypes {
 		if t.Natural {
+			if t.IgnoreCase {
+				v = strings.Compare(strings.ToLower(list[i].Value[t.Index]),
+					strings.ToLower(list[j].Value[t.Index]))
+			} else {
+				v = strings.Compare(list[i].Value[t.Index], list[j].Value[t.Index])
+			}
+			if v == 0 {
+				continue
+			}
+
 			if natsort.Compare(list[i].Value[t.Index], list[j].Value[t.Index], t.IgnoreCase) {
 				v = -1
 			} else {
