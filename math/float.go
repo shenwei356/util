@@ -12,3 +12,23 @@ const MaxUint = ^uint(0)
 const MinUint = 0
 const MaxInt = int(MaxUint >> 1)
 const MinInt = -MaxInt - 1
+
+func MinInts(a int, vals ...int) int {
+	min := a
+	for _, v := range vals {
+		if v < min {
+			min = v
+		}
+	}
+	return min
+}
+
+func MaxInts(a int, vals ...int) int {
+	max := a
+	for _, v := range vals {
+		if v > max {
+			max = v
+		}
+	}
+	return max
+}

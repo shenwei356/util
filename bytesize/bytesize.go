@@ -15,7 +15,7 @@ import (
 	"strings"
 )
 
-// Division operation is needed, so it uses float64 instead of uint64
+// ByteSize stands for byte size. Division operation is needed, so it uses float64 instead of uint64
 type ByteSize float64
 
 // const for bytesize. B is also specified.
@@ -54,7 +54,7 @@ func (b ByteSize) String() string {
 	return fmt.Sprintf("%.2f B", b)
 }
 
-// Regexp object for ByteSize Text. The REGEXP is:
+// BytesizeRegexp is the regexp object for ByteSize Text. The REGEXP is:
 //
 //     (?i)^\s*([\-?[\d\.]+)\s*([KMGTPEZY]?B|[BKMGTPEZY]|)\s?$
 //
@@ -72,10 +72,10 @@ func (b ByteSize) String() string {
 //
 var BytesizeRegexp = regexp.MustCompile(`(?i)^\s*(\-?[\d\.]+)\s*([KMGTPEZY]?B|[BKMGTPEZY]|)\s*$`)
 
-// Error information for Illegal byte size text
+// ErrText is error information for Illegal byte size text
 var ErrText = "illegal bytesize text"
 
-// Parse ByteSize Text to ByteSize object
+// Parse parses ByteSize Text to ByteSize object
 //
 // Example
 //
@@ -122,4 +122,52 @@ func Parse(sizeText []byte) (ByteSize, error) {
 	// fmt.Printf("%s\t=%.2f=\t=%s=\n", sizeText, size, unit)
 
 	return ByteSize(size), nil
+}
+
+// ParseByteSize parses byte size from string.
+func ParseByteSize(val string) (int, error) {
+	val = strings.Trim(val, " \t\r\n")
+	if val == "" {
+		return 0, nil
+	}
+	var u int64
+	var noUnit bool
+	switch val[len(val)-1] {
+	case 'B', 'b':
+		u = 1
+	case 'K', 'k':
+		u = 1 << 10
+	case 'M', 'm':
+		u = 1 << 20
+	case 'G', 'g':
+		u = 1 << 30
+	default:
+		noUnit = true
+		u = 1
+	}
+	var size float64
+	var err error
+	if noUnit {
+		size, err = strconv.ParseFloat(val, 10)
+		if err != nil {
+			return 0, fmt.Errorf("invalid byte size: %s", val)
+		}
+		if size < 0 {
+			size = 0
+		}
+		return int(size), nil
+	}
+
+	if len(val) == 1 { // no value
+		return 0, nil
+	}
+
+	size, err = strconv.ParseFloat(strings.Trim(val[0:len(val)-1], " \t\r\n"), 10)
+	if err != nil {
+		return 0, fmt.Errorf("invalid byte size: %s", val)
+	}
+	if size < 0 {
+		size = 0
+	}
+	return int(size * float64(u)), nil
 }

@@ -20,26 +20,26 @@ func CheckError(err error) {
 	}
 }
 
-func GetFileList(args []string) []string {
-	files := []string{}
-	if len(args) == 0 {
-		files = append(files, "-")
-	} else {
-		for _, file := range files {
-			if isStdin(file) {
-				continue
-			}
-			if _, err := os.Stat(file); os.IsNotExist(err) {
-				CheckError(err)
-			}
-		}
-		files = args
-	}
-	return files
-}
-
 func GetFlagInt(cmd *cobra.Command, flag string) int {
 	value, err := cmd.Flags().GetInt(flag)
+	CheckError(err)
+	return value
+}
+
+func GetFlagUint8(cmd *cobra.Command, flag string) uint8 {
+	value, err := cmd.Flags().GetUint8(flag)
+	CheckError(err)
+	return value
+}
+
+func GetFlagUint32(cmd *cobra.Command, flag string) uint32 {
+	value, err := cmd.Flags().GetUint32(flag)
+	CheckError(err)
+	return value
+}
+
+func GetFlagUint64(cmd *cobra.Command, flag string) uint64 {
+	value, err := cmd.Flags().GetUint64(flag)
 	CheckError(err)
 	return value
 }
