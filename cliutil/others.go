@@ -10,11 +10,16 @@ import (
 	"github.com/shenwei356/breader"
 )
 
-// ReadKVs parse two-column (key\tvalue) tab-delimited file
+// ReadKVs parse two-column (key\tvalue) tab-delimited file(s).
 func ReadKVs(file string, ignoreCase bool) (map[string]string, error) {
 	type KV [2]string
 	fn := func(line string) (interface{}, bool, error) {
-		line = strings.TrimRight(line, "\r\n")
+		if len(line) > 0 && line[len(line)-1] == '\n' {
+			line = line[:len(line)-1]
+		}
+		if len(line) > 0 && line[len(line)-1] == '\r' {
+			line = line[:len(line)-1]
+		}
 		if len(line) == 0 {
 			return nil, false, nil
 		}
@@ -43,6 +48,22 @@ func ReadKVs(file string, ignoreCase bool) (map[string]string, error) {
 		}
 	}
 	return kvs, nil
+}
+
+// DropCR removes last "\r" if it is.
+func DropCR(data []byte) []byte {
+	if len(data) > 0 && data[len(data)-1] == '\r' {
+		return data[0 : len(data)-1]
+	}
+	return data
+}
+
+// DropLF removes "\n"
+func DropLF(data []byte) []byte {
+	if len(data) > 0 && data[len(data)-1] == '\n' {
+		return data[0 : len(data)-1]
+	}
+	return data
 }
 
 func GetFileList(args []string, checkFile bool) []string {
