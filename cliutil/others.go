@@ -33,16 +33,17 @@ func ReadKVs(file string, ignoreCase bool) (map[string]string, error) {
 		return KV([2]string{items[0], items[1]}), true, nil
 	}
 	kvs := make(map[string]string)
-	reader, err := breader.NewBufferedReader(file, 2, 10, fn)
+	reader, err := breader.NewBufferedReader(file, 4, 100, fn)
 	if err != nil {
 		return kvs, err
 	}
 	var items KV
+	var data interface{}
 	for chunk := range reader.Ch {
 		if chunk.Err != nil {
 			return kvs, err
 		}
-		for _, data := range chunk.Data {
+		for _, data = range chunk.Data {
 			items = data.(KV)
 			kvs[items[0]] = items[1]
 		}
