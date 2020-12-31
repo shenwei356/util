@@ -1,25 +1,24 @@
-util
-========
+# util
+
 
 [![GoDoc](https://godoc.org/github.com/shenwei356/util?status.svg)](https://godoc.org/github.com/shenwei356/util)
 [![Go Report Card](https://goreportcard.com/badge/github.com/shenwei356/util)](https://goreportcard.com/report/github.com/shenwei356/util)
 
 Utility packges
 
-Install
--------
+## Install
+
 This package is "go-gettable", just:
 
-    go get github.com/shenwei356/util
+    go get -u github.com/shenwei356/util
 
-Copyright (c) 2013-2015, Wei Shen (shenwei356@gmail.com)
+Copyright (c) 2013-2020, Wei Shen (shenwei356@gmail.com)
 
-More
-----
+## More
+
 See the README of sub package.
 
-Documentation
--------------
+## Documentation
 
 [See documentation on godoc for more detail](https://godoc.org/github.com/shenwei356/util).
 
