@@ -263,39 +263,6 @@ func MakeQuerySlice(letters []byte) []byte {
 	return querySlice
 }
 
-// Split splits a byte slice by giveen letters.
-// It's much faster than regexp.Split
-func Split(slice []byte, letters []byte) [][]byte {
-	querySlice := MakeQuerySlice(letters)
-	results := [][]byte{}
-	tmp := []byte{}
-
-	var j int
-	var value byte
-	var sliceSize = len(querySlice)
-	for _, b := range slice {
-		j = int(b)
-		if j >= sliceSize { // not delimiter byte
-			tmp = append(tmp, b)
-			continue
-		}
-		value = querySlice[j]
-		if value == 0 { // not delimiter byte
-			tmp = append(tmp, b)
-			continue
-		} else {
-			if len(tmp) > 0 {
-				results = append(results, tmp)
-				tmp = []byte{}
-			}
-		}
-	}
-	if len(tmp) > 0 {
-		results = append(results, tmp)
-	}
-	return results
-}
-
 // Bytes2Str convert byte slice to string without GC. Warning: it's unsafe!!!
 func Bytes2Str(b []byte) string {
 	return *(*string)(unsafe.Pointer(&b))
