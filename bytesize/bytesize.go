@@ -31,27 +31,52 @@ const (
 	YB
 )
 
+// FullUnit decides output "10 GB" (true) or "10 G" (false).
+var FullUnit = true
+
 // Print readable values of byte size
 func (b ByteSize) String() string {
+	if FullUnit {
+		switch {
+		case b >= YB:
+			return fmt.Sprintf("%.2f YB", b/YB)
+		case b >= ZB:
+			return fmt.Sprintf("%.2f ZB", b/ZB)
+		case b >= EB:
+			return fmt.Sprintf("%.2f EB", b/EB)
+		case b >= PB:
+			return fmt.Sprintf("%.2f PB", b/PB)
+		case b >= TB:
+			return fmt.Sprintf("%.2f TB", b/TB)
+		case b >= GB:
+			return fmt.Sprintf("%.2f GB", b/GB)
+		case b >= MB:
+			return fmt.Sprintf("%.2f MB", b/MB)
+		case b >= KB:
+			return fmt.Sprintf("%.2f KB", b/KB)
+		}
+		return fmt.Sprintf("%.2f B", b)
+	}
+
 	switch {
 	case b >= YB:
-		return fmt.Sprintf("%.2f YB", b/YB)
+		return fmt.Sprintf("%.2f Y", b/YB)
 	case b >= ZB:
-		return fmt.Sprintf("%.2f ZB", b/ZB)
+		return fmt.Sprintf("%.2f Z", b/ZB)
 	case b >= EB:
-		return fmt.Sprintf("%.2f EB", b/EB)
+		return fmt.Sprintf("%.2f E", b/EB)
 	case b >= PB:
-		return fmt.Sprintf("%.2f PB", b/PB)
+		return fmt.Sprintf("%.2f P", b/PB)
 	case b >= TB:
-		return fmt.Sprintf("%.2f TB", b/TB)
+		return fmt.Sprintf("%.2f T", b/TB)
 	case b >= GB:
-		return fmt.Sprintf("%.2f GB", b/GB)
+		return fmt.Sprintf("%.2f G", b/GB)
 	case b >= MB:
-		return fmt.Sprintf("%.2f MB", b/MB)
+		return fmt.Sprintf("%.2f M", b/MB)
 	case b >= KB:
-		return fmt.Sprintf("%.2f KB", b/KB)
+		return fmt.Sprintf("%.2f K", b/KB)
 	}
-	return fmt.Sprintf("%.2f B", b)
+	return fmt.Sprintf("%.2f", b)
 }
 
 // BytesizeRegexp is the regexp object for ByteSize Text. The REGEXP is:

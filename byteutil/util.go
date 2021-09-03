@@ -32,6 +32,8 @@ func ReverseByteSliceInplace(s []byte) {
 	}
 }
 
+var _newline = []byte{'\n'}
+
 // WrapByteSlice wraps byte slice
 func WrapByteSlice(s []byte, width int) []byte {
 	if width < 1 {
@@ -59,10 +61,50 @@ func WrapByteSlice(s []byte, width int) []byte {
 
 		buffer.Write(s[start:end])
 		if i < lines {
-			buffer.WriteString("\n")
+			// buffer.WriteString("\n")
+			buffer.Write(_newline)
 		}
 	}
 	return buffer.Bytes()
+}
+
+// WrapByteSlice2 wraps byte slice, it reuses the bytes.Buffer
+func WrapByteSlice2(s []byte, width int, buffer *bytes.Buffer) ([]byte, *bytes.Buffer) {
+	if width < 1 {
+		return s, buffer
+	}
+	l := len(s)
+	if l == 0 {
+		return s, buffer
+	}
+
+	var lines int
+	if l%width == 0 {
+		lines = l/width - 1
+	} else {
+		lines = int(l / width)
+	}
+
+	if buffer == nil {
+		buffer = bytes.NewBuffer(make([]byte, 0, l+lines))
+	} else {
+		buffer.Reset()
+	}
+
+	var start, end int
+	for i := 0; i <= lines; i++ {
+		start = i * width
+		end = (i + 1) * width
+		if end > l {
+			end = l
+		}
+
+		buffer.Write(s[start:end])
+		if i < lines {
+			buffer.Write(_newline)
+		}
+	}
+	return buffer.Bytes(), buffer
 }
 
 // BufferedByteSliceWrapper is used to wrap byte slice,
@@ -139,7 +181,8 @@ func (w *BufferedByteSliceWrapper) Wrap(s []byte, width int) ([]byte, *bytes.Buf
 
 		buffer.Write(s[start:end])
 		if i < lines {
-			buffer.WriteString("\n")
+			// buffer.WriteString("\n")
+			buffer.Write(_newline)
 		}
 	}
 	return buffer.Bytes(), buffer
