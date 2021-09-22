@@ -230,3 +230,33 @@ func (stats *Quantiler) getValue(even bool, iMedianL uint64, iMedianR uint64) fl
 	// panic("should never happen")
 	return 0
 }
+
+func (stats *Quantiler) Percentile(percent float64) float64 {
+	if percent <= 0 || percent > 100 {
+		panic("invalid percentile")
+	}
+	if !stats.sorted {
+		stats.sort()
+	}
+	if len(stats.counts) == 0 {
+		return 0
+	}
+
+	if len(stats.counts) == 1 {
+		return float64(stats.counts[0].Value)
+	}
+
+	i0 := float64(stats.n) * percent / 100
+	i := math.Floor(i0)
+
+	even := math.Abs(i0-i) > 0.001
+	var iMedianL, iMedianR uint64 // 0-based
+	if even {
+		iMedianL = uint64(i) - 1
+		iMedianR = uint64(i)
+	} else {
+		iMedianL = uint64(i - 1)
+	}
+
+	return stats.getValue(even, iMedianL, iMedianR)
+}

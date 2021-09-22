@@ -4,6 +4,8 @@ import (
 	"math"
 	"math/rand"
 	"testing"
+
+	stats2 "github.com/montanaflynn/stats"
 )
 
 type testCase struct {
@@ -119,5 +121,42 @@ func Test(t *testing.T) {
 			t.Errorf("case %d: q3 mismatch: %f != %f", i, q3, _case.q3)
 		}
 
+	}
+}
+
+var cases2 = []testCase{
+	{
+		data: []float64{},
+	},
+	{
+		data: []float64{1, 2},
+	},
+	{
+		data: []float64{1, 2, 3},
+	},
+	{
+		data: []float64{1, 2, 3, 3, 4, 5, 6, 7, 5},
+	},
+	{
+		data: []float64{0, 1, 1, 2, 3, 3, 3, 4, 5, 6, 7, 4, 2, 1, 4, 5, 6, 6, 4, 2, 2, 4, 10},
+	},
+}
+
+func Test2(t *testing.T) {
+	for i, _case := range cases2 {
+		rand.Shuffle(len(_case.data), func(i, j int) {
+			_case.data[i], _case.data[j] = _case.data[j], _case.data[i]
+		})
+
+		stats := NewQuantiler()
+		for _, l := range _case.data {
+			stats.Add(l)
+		}
+
+		p90 := stats.Percentile(90)
+		pp90, _ := stats2.Percentile(_case.data, 90)
+		if math.Abs(p90-pp90) > 0.001 {
+			t.Errorf("case %d: p90 mismatch: %f != %f", i, p90, pp90)
+		}
 	}
 }

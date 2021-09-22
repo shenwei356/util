@@ -3,6 +3,7 @@ module github.com/shenwei356/util
 go 1.16
 
 require (
+	github.com/montanaflynn/stats v0.6.6
 	github.com/pkg/errors v0.9.1
 	github.com/shenwei356/bpool v0.0.0-20160710042833-f9e0ee4d0403
 	github.com/shenwei356/breader v0.3.1
