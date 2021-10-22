@@ -129,6 +129,9 @@ var cases2 = []testCase{
 		data: []float64{},
 	},
 	{
+		data: []float64{0.8},
+	},
+	{
 		data: []float64{1, 2},
 	},
 	{
