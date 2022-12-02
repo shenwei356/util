@@ -136,7 +136,7 @@ func (stats *Quantiler) Q1() float64 {
 	}
 
 	if len(stats.counts) == 1 {
-		return float64(stats.counts[0].Value) / 2
+		return stats.counts[0].Value
 	}
 
 	even := stats.n&1 == 0        // %2 == 0
@@ -169,7 +169,7 @@ func (stats *Quantiler) Q3() float64 {
 	}
 
 	if len(stats.counts) == 1 {
-		return float64(stats.counts[0].Value) / 2
+		return stats.counts[0].Value
 	}
 
 	even := stats.n&1 == 0        // %2 == 0
