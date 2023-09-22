@@ -1,6 +1,7 @@
 package stringutil
 
 import (
+	"math"
 	"strconv"
 	"strings"
 
@@ -55,12 +56,12 @@ func (list MultiKeyStringSliceList) Less(i, j int) bool {
 		} else if t.Number {
 			var a, b float64
 			a, err = strconv.ParseFloat(removeComma(list[i].Value[t.Index]), 64)
-			if err != nil {
-				a = 0
+			if err != nil || math.IsNaN(a) {
+				a = math.MaxFloat64
 			}
 			b, err = strconv.ParseFloat(removeComma(list[j].Value[t.Index]), 64)
-			if err != nil {
-				b = 0
+			if err != nil || math.IsNaN(b) {
+				b = math.MaxFloat64
 			}
 			if a < b {
 				v = -1
