@@ -123,13 +123,9 @@ func (list MultiKeyStringSliceList) Less(i, j int) bool {
 }
 
 func removeComma(s string) string {
-	newSlice := []byte{}
-	for i := 0; i < len(s); i++ {
-		switch s[i] {
-		case ',':
-		default:
-			newSlice = append(newSlice, s[i])
-		}
+	if !strings.ContainsRune(s, ',') {
+		return s
 	}
-	return string(newSlice)
+
+	return strings.ReplaceAll(s, ",", "")
 }
