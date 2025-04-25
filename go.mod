@@ -3,6 +3,7 @@ module github.com/shenwei356/util
 go 1.17
 
 require (
+	github.com/araddon/dateparse v0.0.0-20210429162001-6b43995a97de
 	github.com/montanaflynn/stats v0.6.6
 	github.com/pkg/errors v0.9.1
 	github.com/shenwei356/breader v0.3.2
