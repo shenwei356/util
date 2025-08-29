@@ -19,5 +19,5 @@ require (
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/shenwei356/xopen v0.2.2 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
-	github.com/ulikunitz/xz v0.5.10 // indirect
+	github.com/ulikunitz/xz v0.5.14 // indirect
 )
