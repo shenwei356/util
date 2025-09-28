@@ -131,18 +131,12 @@ func (list MultiKeyStringSliceList) Less(i, j int) bool {
 
 		if v == 0 {
 		} else if v < 0 {
-			if t.Reverse {
-				return false
-			}
-			return true
+			return !t.Reverse
 		} else {
-			if t.Reverse {
-				return true
-			}
-			return false
+			return t.Reverse
 		}
 	}
-	return true
+	return false
 }
 
 func removeComma(s string) string {
