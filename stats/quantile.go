@@ -30,7 +30,27 @@ type Quantiler struct {
 
 // NewQuantiler initializes a Quantiler
 func NewQuantiler() *Quantiler {
-	return &Quantiler{count: make(map[float64]float64, 1024), min: math.MaxFloat64}
+	return &Quantiler{
+		count:     make(map[float64]float64, 1024),
+		counts:    make([]valueCount, 0, 1024),
+		accCounts: make([]valueCount, 0, 1024),
+		min:       math.MaxFloat64,
+	}
+}
+
+// Reset clears all data so the Quantiler can be reused.
+func (stats *Quantiler) Reset() {
+	clear(stats.count)
+	// for k := range stats.count {
+	// 	delete(stats.count, k)
+	// }
+	stats.n = 0
+	stats.min = math.MaxFloat64
+	stats.max = 0
+	stats.sum = 0
+	stats.counts = stats.counts[:0]
+	stats.accCounts = stats.accCounts[:0]
+	stats.sorted = false
 }
 
 // Add adds a new element
@@ -50,18 +70,18 @@ func (stats *Quantiler) Add(value float64) {
 }
 
 func (stats *Quantiler) sort() {
-	stats.counts = make([]valueCount, 0, len(stats.count))
+	stats.counts = stats.counts[:0]
 	for value, count := range stats.count {
 		stats.counts = append(stats.counts, valueCount{value, count})
 	}
 	sorts.Quicksort(valueCounts(stats.counts))
 
-	stats.accCounts = make([]valueCount, len(stats.count))
+	stats.accCounts = stats.accCounts[:0]
 	for i, data := range stats.counts {
 		if i == 0 {
-			stats.accCounts[i] = valueCount{data.Value, data.Count}
+			stats.accCounts = append(stats.accCounts, valueCount{data.Value, data.Count})
 		} else {
-			stats.accCounts[i] = valueCount{data.Value, data.Count + stats.accCounts[i-1].Count}
+			stats.accCounts = append(stats.accCounts, valueCount{data.Value, data.Count + stats.accCounts[i-1].Count})
 		}
 	}
 

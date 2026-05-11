@@ -83,12 +83,15 @@ var cases = []testCase{
 }
 
 func Test(t *testing.T) {
+	stats := NewQuantiler()
+
 	for i, _case := range cases {
 		rand.Shuffle(len(_case.data), func(i, j int) {
 			_case.data[i], _case.data[j] = _case.data[j], _case.data[i]
 		})
 
-		stats := NewQuantiler()
+		stats.Reset()
+
 		for _, l := range _case.data {
 			stats.Add(l)
 		}
@@ -146,12 +149,14 @@ var cases2 = []testCase{
 }
 
 func Test2(t *testing.T) {
+	stats := NewQuantiler()
+
 	for i, _case := range cases2 {
 		rand.Shuffle(len(_case.data), func(i, j int) {
 			_case.data[i], _case.data[j] = _case.data[j], _case.data[i]
 		})
 
-		stats := NewQuantiler()
+		stats.Reset()
 		for _, l := range _case.data {
 			stats.Add(l)
 		}
