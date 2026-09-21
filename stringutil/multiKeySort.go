@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"unicode/utf8"
 
 	"github.com/araddon/dateparse"
 	"github.com/shenwei356/natsort"
@@ -17,6 +18,7 @@ type SortType struct {
 	Natural     bool // natural order
 	Number      bool
 	Date        bool
+	Length      bool // number of Unicode code points
 	UserDefined bool
 	Reverse     bool
 	Levels      map[string]int
@@ -43,7 +45,17 @@ func (list MultiKeyStringSliceList) Less(i, j int) bool {
 	var okA, okB bool
 	var ta, tb time.Time
 	for _, t := range *list[i].SortTypes {
-		if t.Natural {
+		if t.Length {
+			a = utf8.RuneCountInString(list[i].Value[t.Index])
+			b = utf8.RuneCountInString(list[j].Value[t.Index])
+			if a < b {
+				v = -1
+			} else if a == b {
+				v = 0
+			} else {
+				v = 1
+			}
+		} else if t.Natural {
 			if t.IgnoreCase {
 				v = strings.Compare(strings.ToLower(list[i].Value[t.Index]),
 					strings.ToLower(list[j].Value[t.Index]))
