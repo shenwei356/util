@@ -1,6 +1,6 @@
 module github.com/shenwei356/util
 
-go 1.21
+go 1.24
 
 require (
 	github.com/araddon/dateparse v0.0.0-20210429162001-6b43995a97de
@@ -14,7 +14,7 @@ require (
 
 require (
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
-	github.com/klauspost/compress v1.15.12 // indirect
+	github.com/klauspost/compress v1.18.7 // indirect
 	github.com/klauspost/pgzip v1.2.5 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/shenwei356/xopen v0.2.2 // indirect
